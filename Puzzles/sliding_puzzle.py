@@ -4,7 +4,8 @@ import numpy as np
 import PIL
 import pygame
 
-from puzzle import Puzzle
+from helpers import EventHandler
+from puzzle import Puzzle, PuzzleEvents
 
 
 class SlidingPuzzle(Puzzle):
@@ -131,7 +132,7 @@ class SlidingPuzzle(Puzzle):
             self.pieces[self.orderlist[i]].relative_y += direction[1]
         self.generate_orderlist(origin_tile)
         if self.orderlist == list(range(self.total_pieces)):
-            self.event.append(SlidingPuzzle.SOLVED)
+            EventHandler.add(PuzzleEvents.SOLVED)
             self.pieces[-1].image = self.last_image
         self.image_update()
 

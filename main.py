@@ -7,6 +7,8 @@ import puzzle
 from Puzzles.flipping_puzzle import FlippingPuzzle
 from Puzzles.lights_out_puzzle import LightsOut
 from Puzzles.sliding_puzzle import SlidingPuzzle
+from Player.player import Player, PlayerEvents
+from helpers import EventHandler
 
 
 def switch_puzzle(puzzle_index, puzzle_list: list):
@@ -35,19 +37,22 @@ if __name__ == "__main__":
     screen.fill((255, 0, 0))
     active_puzzle = switch_puzzle(current_puzzle, puzzles)
     screen.blit(active_puzzle.image, (0, 0))
+    player = Player()
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            # player.loop(event)
             active_puzzle.loop(event)
 
-        if puzzle.Puzzle.UPDATE in active_puzzle.event:
-            screen.blit(active_puzzle.image, (0, 0))
-            active_puzzle.event.remove(puzzle.Puzzle.UPDATE)
-
-        if puzzle.Puzzle.SOLVED in active_puzzle.event:
-            current_puzzle += 1
-            active_puzzle = switch_puzzle(current_puzzle, puzzles)
+        for event in EventHandler.get():
+            #     if event == PlayerEvents.SPRITE_UPDATE:
+            #         screen.blit(player.image, (0, 0))
+            if event == puzzle.PuzzleEvents.SPRITE_UPDATE:
+                screen.blit(active_puzzle.image, (0, 0))
+            if event == puzzle.PuzzleEvents.SOLVED:
+                current_puzzle += 1
+                active_puzzle = switch_puzzle(current_puzzle, puzzles)
 
         pygame.display.flip()

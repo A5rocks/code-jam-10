@@ -1,8 +1,14 @@
 import numpy as np
 import PIL
 import pygame
+from enum import Enum
+
+from helpers import EventHandler
 
 
+class PuzzleEvents(Enum):
+    SPRITE_UPDATE = 0
+    SOLVED = 1
 class Puzzle:
     """
     Parent class Puzzle
@@ -58,9 +64,6 @@ class Puzzle:
           2 , 3 ]
     """
 
-    UPDATE = 0
-    SOLVED = 1
-
     def __init__(
         self,
         image: PIL.Image.Image,
@@ -84,7 +87,6 @@ class Puzzle:
         self.image, self.shape, self.pieces = self.modify_image(image, output_size)
         self.orderlist = list(range(0, self.total_pieces))
         self.puzzle_x, self.puzzle_y = puzzle_pos
-        self.event = []
 
     def modify_image(self, image: PIL.Image.Image, output_size: tuple[int, int]):
         """
@@ -195,7 +197,7 @@ class Puzzle:
         self.image = pygame.surfarray.make_surface(
             np.swapaxes(np.concatenate(tuple(temp_array), axis=0), 0, 1)
         )
-        self.event.append(Puzzle.UPDATE)
+        EventHandler.add(PuzzleEvents.SPRITE_UPDATE)
 
 
 class PuzzlePiece:
