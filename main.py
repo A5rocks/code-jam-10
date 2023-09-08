@@ -3,12 +3,11 @@ import os
 import pygame
 from PIL import Image
 
-import puzzle
+from helpers import EventHandler, EventTypes
+from Player.player import Player
 from Puzzles.flipping_puzzle import FlippingPuzzle
 from Puzzles.lights_out_puzzle import LightsOut
 from Puzzles.sliding_puzzle import SlidingPuzzle
-from Player.player import Player, PlayerEvents
-from helpers import EventHandler
 
 
 def switch_puzzle(puzzle_index, puzzle_list: list):
@@ -49,9 +48,9 @@ if __name__ == "__main__":
         for event in EventHandler.get():
             #     if event == PlayerEvents.SPRITE_UPDATE:
             #         screen.blit(player.image, (0, 0))
-            if event == puzzle.PuzzleEvents.SPRITE_UPDATE:
+            if event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
                 screen.blit(active_puzzle.image, (0, 0))
-            if event == puzzle.PuzzleEvents.SOLVED:
+            if event.type == EventTypes.PUZZLE_SOLVED:
                 current_puzzle += 1
                 active_puzzle = switch_puzzle(current_puzzle, puzzles)
 

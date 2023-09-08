@@ -1,56 +1,87 @@
-from enum import Enum
+from enum import Enum, auto
 from typing import Any
 
-import pygame
 import numpy as np
 import numpy.typing
+import pygame
 
 
-def make_2d_surface_from_array(array: numpy.typing.NDArray, swap_axes=True,
-                               color_key: tuple[int, int, int] = (0, 0, 0)) -> pygame.Surface:
-    """Make a 2d surface from a numpy array
+def make_2d_surface_from_array(
+    array: numpy.typing.NDArray,
+    swap_xy=True,
+    color_key: tuple[int, int, int] = (0, 0, 0),
+) -> pygame.Surface:
+    """Make a 2d surface from a numpy array, accepts both RGB and RGBA arrays
 
-    Accepts both RGB and RGBA arrays
-
-    Arguments:
+    Args:
         array: Numpy NDArray of shape (n, m, 3) or (n, m, 4)
-        swap_axes: By default, images from PIL need their x/y dimensions to be swapped
-        color_key: What color to use as the alpha for RGBA images, ignored for RGB images
-
+        swap_xy: By default, images from PIL need their x/y dims to be swapped
+        color_key: What color to key for alpha in RGBA images, ignored for RGB images
     """
     if len(array.shape) != 3 or array.shape[2] not in (3, 4):
-        raise ValueError(f"Must be an array with shape (n, m, 3) or (n, m, 4). Received array is {array.shape}")
-    if swap_axes:
-        axes_swap = (0, 1)
-    else:
-        axes_swap = (0, 0)
-    if array.shape[2] == 3:
-        return pygame.surfarray.make_surface(np.swapaxes(array, *axes_swap))
-    elif array.shape[2] == 4:
-        temp_surface = pygame.surfarray.make_surface(np.swapaxes(array[:, :, :3], *axes_swap))
+        raise ValueError(
+            f"Must be an array with shape (n, m, 3) or (n, m, 4), "
+            f"received array is {array.shape}"
+        )
+    if swap_xy:
+        array = np.swapaxes(array, 0, 1)
+    temp_surface = pygame.surfarray.make_surface(array[:, :, :3])
+    if array.shape[2] == 4:
         temp_surface.set_colorkey(color_key)
-        return temp_surface
+    return temp_surface
+
+
+class EventTypes(Enum):
+    """All the event types that will be used"""
+
+    PLAYER_SPRITE_UPDATE = auto()
+    PLAYER_MOVEMENT_UPDATE = auto()
+    PUZZLE_SPRITE_UPDATE = auto()
+    PUZZLE_SOLVED = auto()
 
 
 class Event:
-    def __init__(self, event):
-        self.event = event
-        self.type = event  # Change later if we want Event to store any actual data
+    """Event class meant to mimic pygame's events
 
-    def __eq__(self, other):
-        return self.event == other
+    Args:
+        event_type: Event type Enum value
+        event_data: Any data for the event to store. None by default
+
+    Attributes:
+        type: Event type
+        data: Stored data of the event, default None
+    """
+
+    def __init__(self, event_type: Enum, event_data: Any = None):
+        self.type = event_type
+        self.data = event_data
+
+    def __eq__(self, other: Enum):
+        return self.type == other
 
 
 class EventHandler:
-    """Simple event handler that stores event enums in a list, then clears it on read"""
+    """Static event handler that stores a list of Events, then clears on read"""
+
     _events: list[Event] = []
 
     @staticmethod
-    def add(event: Enum) -> None:
-        EventHandler._events.append(Event(event))
+    def add(event: Enum, data: Any = None) -> None:
+        """Adds an event to be handled
+
+        Args:
+            event: Enum for event
+            data: Data to be stored with the event
+        """
+        EventHandler._events.append(Event(event, data))
 
     @staticmethod
     def get() -> list[Event]:
+        """Gets all events from the handler and clears the internal storage
+
+        Returns:
+            list[Event]
+        """
         temp_list = EventHandler._events
         EventHandler._events = []
         return temp_list

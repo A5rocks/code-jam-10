@@ -1,25 +1,18 @@
 import numpy as np
 import PIL
-import pygame
-from enum import Enum
 
-from helpers import EventHandler
+from helpers import EventHandler, EventTypes, make_2d_surface_from_array
 
 
-class PuzzleEvents(Enum):
-    SPRITE_UPDATE = 0
-    SOLVED = 1
 class Puzzle:
-    """
-    Parent class Puzzle
+    """Parent class Puzzle
 
-    Description: All image puzzles are a subset of this class. This class splits a
+    All image puzzles are a subset of this class. This class splits a
     puzzle image up into individual pieces that can be modified, moved, and deleted.
     This module assumes that puzzles will have the same number of pieces tall as they
     are wide, so rectangular puzzles will have rectangular pieces.
 
-    Inputs:
-
+    Args:
         image:
             A PIL image, returned by Image.open('some_image_file.png').
 
@@ -36,32 +29,31 @@ class Puzzle:
             the puzzle is not in the top-left corner of the window.
 
     Attributes:
+        pieces_per_side:
+            This is the number of pieces on any given section of the puzzle (see below)
+            if pieces_per_side is 5:
+                puzzle looks like:
+                       r * * * * *
+                       | * * * * *
+               5 pieces| * * * * *
+                       | * * * * *
+                       L * * * * *
+            and total_pieces is 25.
 
-    pieces_per_side:
-        This is the number of pieces on any given section of the puzzle ( see below )
-        if pieces_per_side is 5:
+        image:
+            this is how the puzzle currently looks.
+            On initialization the puzzle looks like the input image.
+
+        orderlist:
+            This is a list of length total_pieces containing the order of the pieces.
+            For instance if pieces_per_side is 2, then orderlist starts as [0, 1, 2, 3]
+            [ 0 , 1 ,
+              2 , 3 ]
+            swapping the top two pieces:
+            orderlist is [1, 0, 2, 3]
             puzzle looks like:
-                   r * * * * *
-                   | * * * * *
-           5 pieces| * * * * *
-                   | * * * * *
-                   L * * * * *
-        and total_pieces is 25.
-
-    image:
-        this is how the puzzle currently looks.
-        On initialization the puzzle looks like the input image.
-
-    orderlist:
-        This is a list of length total_pieces containing the order of the pieces.
-        For instance if pieces_per_side is 2, then orderlist starts as [0, 1, 2, 3]
-        [ 0 , 1 ,
-          2 , 3 ]
-        swapping the top two pieces:
-        orderlist is [1, 0, 2, 3]
-        puzzle looks like:
-        [ 1 , 0 ,
-          2 , 3 ]
+            [ 1 , 0 ,
+              2 , 3 ]
     """
 
     def __init__(
@@ -89,14 +81,16 @@ class Puzzle:
         self.puzzle_x, self.puzzle_y = puzzle_pos
 
     def modify_image(self, image: PIL.Image.Image, output_size: tuple[int, int]):
-        """
-        modify_image(image, output_size)
+        """Resizes the input image to the output size.
 
-            Resizes the input image to the output size.
         Splits the image into total_pieces parts, then creates a PuzzlePiece object from
         the image. PuzzlePiece object is stored in a list called pieces. Raises an
         Exception if the resized image cannot be divided into total_pieces without
         remainder.
+
+        Raises:
+            SomeException: resized image cannot be divided into total_pieces without
+            remainder  TODO: What exception?
         """
         if output_size:
             image = image.resize(output_size)
@@ -194,10 +188,10 @@ class Puzzle:
                 for row in range(self.pieces_per_side)
             ]
         ]
-        self.image = pygame.surfarray.make_surface(
-            np.swapaxes(np.concatenate(tuple(temp_array), axis=0), 0, 1)
+        self.image = make_2d_surface_from_array(
+            np.concatenate(tuple(temp_array), axis=0)
         )
-        EventHandler.add(PuzzleEvents.SPRITE_UPDATE)
+        EventHandler.add(EventTypes.PUZZLE_SPRITE_UPDATE)
 
 
 class PuzzlePiece:

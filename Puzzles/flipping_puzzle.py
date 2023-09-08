@@ -4,8 +4,8 @@ import numpy as np
 import PIL
 import pygame
 
-from puzzle import Puzzle, PuzzleEvents
-from helpers import EventHandler
+from helpers import EventHandler, EventTypes
+from puzzle import Puzzle
 
 
 class FlippingPuzzle(Puzzle):
@@ -29,7 +29,7 @@ class FlippingPuzzle(Puzzle):
             tile = self.get_tile_index_from_pos(pygame.mouse.get_pos())
             self.flip(tile)
             self.image_update()
-            EventHandler.add(PuzzleEvents.SPRITE_UPDATE)
+            EventHandler.add(EventTypes.PUZZLE_SPRITE_UPDATE)
         pass
 
     def scramble(self):
@@ -53,4 +53,4 @@ class FlippingPuzzle(Puzzle):
             PIL.Image.open("sample_images/Monalisa.png").resize(self.output_size)
         ).swapaxes(0, 1)
         if np.array_equal(one, two):
-            EventHandler.add(PuzzleEvents.SOLVED)
+            EventHandler.add(EventTypes.PUZZLE_SOLVED)

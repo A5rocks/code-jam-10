@@ -1,18 +1,17 @@
 from enum import Enum
 
-import PIL
 import numpy as np
 import numpy.typing
+import PIL
 import pygame
-from types import SimpleNamespace
-from typing import assert_never
-
 import pygame.event
 
-from helpers import make_2d_surface_from_array, EventHandler
+from helpers import EventHandler, EventTypes, make_2d_surface_from_array
 
 
 class MovementDirections(Enum):
+    """Player movement directions enum"""
+
     UP = (0, 1)
     DOWN = (0, -1)
     LEFT = (-1, 0)
@@ -34,16 +33,22 @@ PLAYER_SPRITES: dict[MovementDirections, numpy.typing.NDArray] = {
 }
 
 
-class PlayerEvents(Enum):
-    SPRITE_UPDATE = 0
-
-
 class Player:
+    """Main player class"""
+
     def __init__(self):
         self.image = PLAYER_SPRITES[MovementDirections.DOWN]
         self.position = numpy.array([0, 0])
 
     def loop(self, event: pygame.event):
+        """Player update method
+
+        Args:
+            event:
+
+        Returns:
+
+        """
         if event.type != pygame.KEYDOWN:
             return
         if all(event.key != alternatives for alternatives in KEYPRESS_ALTERNATIVES):
@@ -51,4 +56,4 @@ class Player:
         movement_direction = KEYPRESS_ALTERNATIVES[event.key]
         sprite = PLAYER_SPRITES[movement_direction]
         self.image = make_2d_surface_from_array(sprite)
-        EventHandler.add(PlayerEvents.SPRITE_UPDATE)
+        EventHandler.add(EventTypes.PLAYER_SPRITE_UPDATE)

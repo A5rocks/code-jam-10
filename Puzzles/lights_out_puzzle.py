@@ -4,8 +4,8 @@ import numpy as np
 import PIL
 import pygame
 
-from helpers import EventHandler
-from puzzle import Puzzle, PuzzleEvents
+from helpers import EventHandler, EventTypes
+from puzzle import Puzzle
 
 
 class LightsOut(Puzzle):
@@ -36,7 +36,7 @@ class LightsOut(Puzzle):
             neighbors = self.get_neighbors(tile)
             self.invert(neighbors)
             self.image_update()
-            EventHandler.add(PuzzleEvents.SPRITE_UPDATE)
+            EventHandler.add(EventTypes.PUZZLE_SPRITE_UPDATE)
         pass
 
     def invert(self, inverted_tiles: list[int]):
@@ -54,7 +54,7 @@ class LightsOut(Puzzle):
                 np.full(self.pieces[i].image.shape, fill_value=-1, dtype=np.uint8),
             )
         if self.light_list == [False] * self.total_pieces:
-            EventHandler.add(PuzzleEvents.SOLVED)
+            EventHandler.add(EventTypes.PUZZLE_SOLVED)
 
     def get_neighbors(self, tile: int):
         """Find the neighbors of a given tile"""
