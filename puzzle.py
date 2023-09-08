@@ -68,16 +68,16 @@ class Puzzle:
         output_size: tuple[int, int],
         puzzle_pos: tuple[int, int],
     ):
-        if type(image) is not PIL.PngImagePlugin.PngImageFile:
-            raise (
-                TypeError(
-                    "Expected type "
-                    + str(PIL.PngImagePlugin.PngImageFile)
-                    + ", got type "
-                    + str(type(image))
-                    + " instead."
-                )
-            )
+        # if type(image) is not PIL.PngImagePlugin.PngImageFile:
+        #     raise (
+        #         TypeError(
+        #             "Expected type "
+        #             + str(PIL.PngImagePlugin.PngImageFile)
+        #             + ", got type "
+        #             + str(type(image))
+        #             + " instead."
+        #         )
+        #     )
         self.output_size = output_size
         self.pieces_per_side = pieces_per_side
         self.total_pieces = pieces_per_side**2
@@ -201,7 +201,7 @@ class Puzzle:
 class PuzzlePiece:
     """This is a class to store puzzle pieces and the data for them"""
 
-    def __init__(self, image: PIL.Image.Image, relative_index: int, master: Puzzle):
+    def __init__(self, image: np.array, relative_index: int, master: Puzzle):
         self.image = image
         self.master = master
         self.relative_index = relative_index
