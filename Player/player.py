@@ -41,7 +41,9 @@ class Player:
         self.image = PLAYER_SPRITES[MovementDirections.DOWN]
         self.position = start_pos
         self._scaling_factor = scaling_factor
-        self._collision_map = np.array(PIL.Image.open("collision_map.png")).swapaxes(0, 1)
+        self._collision_map = np.array(PIL.Image.open("collision_map.png")).swapaxes(
+            0, 1
+        )
 
     def loop(self, event: pygame.event.EventType):
         """Player update method
@@ -58,12 +60,31 @@ class Player:
             return
         movement_direction = KEYPRESS_ALTERNATIVES[event.key]
         sprite = PLAYER_SPRITES[movement_direction]
-        self.image = make_2d_surface_from_array(sprite, scaling_factor=self._scaling_factor)
-        if self._collision_map[self.position[0] + movement_direction.value[0], self.position[1] + movement_direction.value[1], 0]:
+        self.image = make_2d_surface_from_array(
+            sprite, scaling_factor=self._scaling_factor
+        )
+        if self._collision_map[
+            self.position[0] + movement_direction.value[0],
+            self.position[1] + movement_direction.value[1],
+            0,
+        ]:
             movement_direction = MovementDirections.NULL
-        elif self._collision_map[self.position[0] + movement_direction.value[0], self.position[1] + movement_direction.value[1], 1]:
+        elif self._collision_map[
+            self.position[0] + movement_direction.value[0],
+            self.position[1] + movement_direction.value[1],
+            1,
+        ]:
             movement_direction = MovementDirections.NULL
-            EventHandler.add(EventTypes.INTERACTION_EVENT, (self.position[0] + movement_direction.value[0], self.position[1] + movement_direction.value[1]))
-        self.position = (self.position[0] + movement_direction.value[0], self.position[1] + movement_direction.value[1])
+            EventHandler.add(
+                EventTypes.INTERACTION_EVENT,
+                (
+                    self.position[0] + movement_direction.value[0],
+                    self.position[1] + movement_direction.value[1],
+                ),
+            )
+        self.position = (
+            self.position[0] + movement_direction.value[0],
+            self.position[1] + movement_direction.value[1],
+        )
         EventHandler.add(EventTypes.PLAYER_SPRITE_UPDATE)
         EventHandler.add(EventTypes.MAP_POSITION_UPDATE, movement_direction.value)

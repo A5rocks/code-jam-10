@@ -2,24 +2,25 @@ from enum import Enum, auto
 from typing import Any
 
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 import pygame
 
 
 def make_2d_surface_from_array(
-    array: numpy.typing.NDArray,
-    swap_xy=True,
+    array: npt.NDArray[int],
+    swap_xy: bool = True,
     color_key: tuple[int, int, int] = (0, 0, 0),
     scaling_factor: int = 1,
 ) -> pygame.Surface:
     """Make a 2d surface from a numpy array, accepts both RGB and RGBA arrays
 
     Args:
-        array: Numpy NDArray of shape (n, m, 3) or (n, m, 4)
+        array: Any sequence of shape (n, m, 3) or (n, m, 4)
         swap_xy: By default, images from PIL need their x/y dims to be swapped
         color_key: What color to key for alpha in RGBA images, ignored for RGB images
         scaling_factor: Make the image bigger by scaling_factor
     """
+    array = np.array(array)
     if len(array.shape) != 3 or array.shape[2] not in (3, 4):
         raise ValueError(
             f"Must be an array with shape (n, m, 3) or (n, m, 4), "
@@ -33,9 +34,6 @@ def make_2d_surface_from_array(
         temp_surface.set_colorkey(color_key)
     return temp_surface
 
-
-def get_tiles_something(screen_size: tuple[int, int], tile_size: tuple[int, int], scaling_factor: int):  # TODO: un-tired this
-    return screen_size[0] // (tile_size[0] * scaling_factor), screen_size[1] // (tile_size[1] * scaling_factor)
 
 class EventTypes(Enum):
     """All the event types that will be used"""
@@ -85,11 +83,7 @@ class EventHandler:
 
     @staticmethod
     def get() -> list[Event]:
-        """Gets all events from the handler and clears the internal storage
-
-        Returns:
-            list[Event]
-        """
+        """Gets all events from the handler and clears the internal storage"""
         temp_list = EventHandler._events
         EventHandler._events = []
         return temp_list
