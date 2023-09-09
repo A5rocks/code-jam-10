@@ -28,7 +28,7 @@ if __name__ == "__main__":
         (LightsOut, "sample_images/Monalisa.png", 4),
     ]
 
-    screen_size = (380, 500)
+    screen_size = (320, 512)
     screen = pygame.display.set_mode(screen_size)  # Start PyGame initialization.
     # This is required in order to convert PIL images into PyGame Surfaces
     pygame.init()
@@ -38,11 +38,12 @@ if __name__ == "__main__":
     screen.fill((255, 0, 0))
     active_puzzle = switch_puzzle(current_puzzle, puzzles)
     # screen.blit(active_puzzle.image, (0, 0))
-    player = Player()
     tile_pixels = (16, 16)
-    tile_number = get_tiles_something(screen_size, tile_pixels)  # TODO: un-tired this
-    middle_tile_pixels = ((tile_number[0]//2) * tile_pixels[0], tile_number[1]//2 * tile_pixels[1])
-    game_map = GameMap("game_map.png", (16, 16), (10, 10))
+    scaling_factor = 4
+    tile_number = get_tiles_something(screen_size, tile_pixels, scaling_factor)  # TODO: un-tired this
+    middle_tile_pixels = ((((tile_number[0]-1) * scaling_factor)//2) * tile_pixels[0], ((tile_number[1])*scaling_factor)//2 * tile_pixels[1])
+    game_map = GameMap("game_map.png", tile_pixels, tile_number, scaling_factor)
+    player = Player(scaling_factor)
 
     while running:
         for event in pygame.event.get():

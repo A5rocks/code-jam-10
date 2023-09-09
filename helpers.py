@@ -34,8 +34,8 @@ def make_2d_surface_from_array(
     return temp_surface
 
 
-def get_tiles_something(screen_size: tuple[int, int], tile_size: tuple[int, int]):  # TODO: un-tired this
-    return screen_size[0] // tile_size[0], screen_size[1] // tile_size[1]
+def get_tiles_something(screen_size: tuple[int, int], tile_size: tuple[int, int], scaling_factor: int):  # TODO: un-tired this
+    return screen_size[0] // (tile_size[0] * scaling_factor), screen_size[1] // (tile_size[1] * scaling_factor)
 
 class EventTypes(Enum):
     """All the event types that will be used"""
