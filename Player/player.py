@@ -40,7 +40,7 @@ class Player:
         self.image = PLAYER_SPRITES[MovementDirections.DOWN]
         self.position = numpy.array([0, 0])
 
-    def loop(self, event: pygame.event):
+    def loop(self, event: pygame.event.EventType):
         """Player update method
 
         Args:
@@ -55,5 +55,6 @@ class Player:
             return
         movement_direction = KEYPRESS_ALTERNATIVES[event.key]
         sprite = PLAYER_SPRITES[movement_direction]
-        self.image = make_2d_surface_from_array(sprite)
+        self.image = make_2d_surface_from_array(sprite, scaling_factor=10)
         EventHandler.add(EventTypes.PLAYER_SPRITE_UPDATE)
+        EventHandler.add(EventTypes.MAP_POSITION_UPDATE, movement_direction.value)

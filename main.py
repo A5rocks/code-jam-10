@@ -3,11 +3,12 @@ import os
 import pygame
 from PIL import Image
 
-from helpers import EventHandler, EventTypes
+from helpers import EventHandler, EventTypes, get_tiles_something
 from Player.player import Player
 from Puzzles.flipping_puzzle import FlippingPuzzle
 from Puzzles.lights_out_puzzle import LightsOut
 from Puzzles.sliding_puzzle import SlidingPuzzle
+from game_map import GameMap
 
 
 def switch_puzzle(puzzle_index, puzzle_list: list):
@@ -27,7 +28,8 @@ if __name__ == "__main__":
         (LightsOut, "sample_images/Monalisa.png", 4),
     ]
 
-    screen = pygame.display.set_mode((380, 500))  # Start PyGame initialization.
+    screen_size = (380, 500)
+    screen = pygame.display.set_mode(screen_size)  # Start PyGame initialization.
     # This is required in order to convert PIL images into PyGame Surfaces
     pygame.init()
 
@@ -35,23 +37,33 @@ if __name__ == "__main__":
 
     screen.fill((255, 0, 0))
     active_puzzle = switch_puzzle(current_puzzle, puzzles)
-    screen.blit(active_puzzle.image, (0, 0))
+    # screen.blit(active_puzzle.image, (0, 0))
     player = Player()
+    tile_pixels = (16, 16)
+    tile_number = get_tiles_something(screen_size, tile_pixels)  # TODO: un-tired this
+    middle_tile_pixels = ((tile_number[0]//2) * tile_pixels[0], tile_number[1]//2 * tile_pixels[1])
+    game_map = GameMap("game_map.png", (16, 16), (10, 10))
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            # player.loop(event)
+
+            player.loop(event)
             active_puzzle.loop(event)
 
         for event in EventHandler.get():
+            if event.type == EventTypes.MAP_POSITION_UPDATE:
+                screen.blit(game_map.update(event.data), (0, 0))
+                screen.blit(player.image, middle_tile_pixels)
+            if event.type == EventTypes.PLAYER_SPRITE_UPDATE:
+                screen.blit(player.image, middle_tile_pixels)
             #     if event == PlayerEvents.SPRITE_UPDATE:
             #         screen.blit(player.image, (0, 0))
-            if event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
-                screen.blit(active_puzzle.image, (0, 0))
-            if event.type == EventTypes.PUZZLE_SOLVED:
-                current_puzzle += 1
-                active_puzzle = switch_puzzle(current_puzzle, puzzles)
+            # if event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
+            #     screen.blit(active_puzzle.image, (0, 0))
+            # if event.type == EventTypes.PUZZLE_SOLVED:
+            #     current_puzzle += 1
+            #     active_puzzle = switch_puzzle(current_puzzle, puzzles)
 
         pygame.display.flip()

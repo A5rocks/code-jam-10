@@ -10,6 +10,7 @@ def make_2d_surface_from_array(
     array: numpy.typing.NDArray,
     swap_xy=True,
     color_key: tuple[int, int, int] = (0, 0, 0),
+    scaling_factor: int = 1,
 ) -> pygame.Surface:
     """Make a 2d surface from a numpy array, accepts both RGB and RGBA arrays
 
@@ -17,12 +18,14 @@ def make_2d_surface_from_array(
         array: Numpy NDArray of shape (n, m, 3) or (n, m, 4)
         swap_xy: By default, images from PIL need their x/y dims to be swapped
         color_key: What color to key for alpha in RGBA images, ignored for RGB images
+        scaling_factor: Make the image bigger by scaling_factor
     """
     if len(array.shape) != 3 or array.shape[2] not in (3, 4):
         raise ValueError(
             f"Must be an array with shape (n, m, 3) or (n, m, 4), "
             f"received array is {array.shape}"
         )
+    array = array.repeat(scaling_factor, axis=0).repeat(scaling_factor, axis=1)
     if swap_xy:
         array = np.swapaxes(array, 0, 1)
     temp_surface = pygame.surfarray.make_surface(array[:, :, :3])
@@ -31,6 +34,9 @@ def make_2d_surface_from_array(
     return temp_surface
 
 
+def get_tiles_something(screen_size: tuple[int, int], tile_size: tuple[int, int]):  # TODO: un-tired this
+    return screen_size[0] // tile_size[0], screen_size[1] // tile_size[1]
+
 class EventTypes(Enum):
     """All the event types that will be used"""
 
@@ -38,6 +44,7 @@ class EventTypes(Enum):
     PLAYER_MOVEMENT_UPDATE = auto()
     PUZZLE_SPRITE_UPDATE = auto()
     PUZZLE_SOLVED = auto()
+    MAP_POSITION_UPDATE = auto()
 
 
 class Event:
