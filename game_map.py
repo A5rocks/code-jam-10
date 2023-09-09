@@ -18,11 +18,11 @@ class MapSlicer:
 
 
 class GameMap:
-    def __init__(self, image_path: str, pixels_per_tile: tuple[int, int], tiles_on_screen: tuple[int, int], scaling_factor: int):
+    def __init__(self, image_path: str, pixels_per_tile: tuple[int, int], tiles_on_screen: tuple[int, int], scaling_factor: int, start_pos):
         self._map_image_array = np.array(PIL.Image.open(image_path))
-        self._map_position = MapSlicer((0, 0), tiles_on_screen, pixels_per_tile)
+        self._map_position = MapSlicer(start_pos, tiles_on_screen, pixels_per_tile)
         self._scaling_factor = scaling_factor
 
     def update(self, shift_amount):
-        self._map_position.shift((shift_amount[0], shift_amount[1] * -1))
+        self._map_position.shift(shift_amount)
         return make_2d_surface_from_array(self._map_image_array[*reversed(self._map_position.slices)], scaling_factor=self._scaling_factor)

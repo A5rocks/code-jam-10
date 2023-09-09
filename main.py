@@ -42,8 +42,8 @@ if __name__ == "__main__":
     scaling_factor = 4
     tile_number = get_tiles_something(screen_size, tile_pixels, scaling_factor)  # TODO: un-tired this
     middle_tile_pixels = ((((tile_number[0]-1) * scaling_factor)//2) * tile_pixels[0], ((tile_number[1])*scaling_factor)//2 * tile_pixels[1])
-    game_map = GameMap("game_map.png", tile_pixels, tile_number, scaling_factor)
-    player = Player(scaling_factor)
+    game_map = GameMap("game_map.png", tile_pixels, tile_number, scaling_factor, (0, 0))
+    player = Player(scaling_factor, (2, 4))
 
     while running:
         for event in pygame.event.get():
@@ -59,6 +59,8 @@ if __name__ == "__main__":
                 screen.blit(player.image, middle_tile_pixels)
             if event.type == EventTypes.PLAYER_SPRITE_UPDATE:
                 screen.blit(player.image, middle_tile_pixels)
+            if event.type == EventTypes.INTERACTION_EVENT:
+                print(event.data)
             #     if event == PlayerEvents.SPRITE_UPDATE:
             #         screen.blit(player.image, (0, 0))
             # if event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
