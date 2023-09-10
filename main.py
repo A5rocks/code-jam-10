@@ -48,9 +48,11 @@ if __name__ == "__main__":
     fitting_tile_amount = (
         np.array(screen_size) // (tile_pixel_size * scaling_factor) + 1
     )
-    middle_tile_pixel_location = (
+    middle_tile_pixel_location = np.array(
         (fitting_tile_amount // 2) * tile_pixel_size * scaling_factor
     )
+    # offset to get the player in the middle of the tiles
+    middle_tile_pixel_location += tile_pixel_size // 2
     starting_offset = (11, 10)
     game_map = GameMap(
         "GameMap/floor_surface.png",

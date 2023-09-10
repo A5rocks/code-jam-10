@@ -1,6 +1,7 @@
 import os
 from typing import Sequence
 
+import numpy
 import numpy as np
 import PIL.Image
 import pygame
@@ -75,12 +76,49 @@ class GameMap:
             shift_amount: (x, y) amount to shift the map
         """
         self._map_position.shift(shift_amount)
+        map_slices = self._map_position.get_slices()
+        if all(map_slice.start >= 0 for map_slice in map_slices):
+            floor_array = self._floor_image_array[*map_slices]
+            deco_array = self._deco_image_array[*map_slices]
+        else:
+            array_size = np.array(
+                [map_slice.stop - map_slice.start for map_slice in map_slices]
+            )
+            tuple_slices = np.array(
+                [(map_slice.start, map_slice.stop) for map_slice in map_slices]
+            )
+            zero_overwrite_slices = np.zeros((2, 2), int)
+            alt_array_slices = np.zeros((2, 2), int)
+            for index, tup_slice in enumerate(tuple_slices):
+                if tup_slice[0] < 0:
+                    zero_overwrite_slices[index] = [
+                        -1 * tup_slice[0],
+                        array_size[index],
+                    ]
+                    alt_array_slices[index] = [0, tup_slice[1]]
+                else:
+                    zero_overwrite_slices[index] = [0, array_size[index]]
+                    alt_array_slices[index] = tup_slice
+            alt_slices = [slice(x, y) for x, y in alt_array_slices]
+            floor_array = np.zeros([*array_size, self._floor_image_array.shape[2]], int)
+            deco_array = np.zeros([*array_size, self._deco_image_array.shape[2]], int)
+            # I don't understand why this breaks the other case, but the other
+            # case works by default, so whatever
+            if map_slices[0].start < 0 <= map_slices[1].start:
+                zero_overwrite_slices[:, 1] = np.minimum(
+                    zero_overwrite_slices[:, 1],
+                    self._floor_image_array[*alt_slices].shape[1],
+                )
+            zero_slices = [slice(x, y) for x, y in zero_overwrite_slices]
+            floor_array[*zero_slices] = self._floor_image_array[*alt_slices]
+            deco_array[*zero_slices] = self._deco_image_array[*alt_slices]
+
         self.floor_surface = make_2d_surface_from_array(
-            self._floor_image_array[*self._map_position.get_slices()],
+            floor_array,
             scaling_factor=self._scaling_factor,
         )
         self.deco_surface = make_2d_surface_from_array(
-            self._deco_image_array[*self._map_position.get_slices()],
+            deco_array,
             scaling_factor=self._scaling_factor,
             color_key=(255, 0, 255),
         )
