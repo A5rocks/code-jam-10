@@ -5,6 +5,9 @@ import numpy as np
 import PIL.Image
 import pygame
 
+from GameMap.game_map import GameMap
+from helpers import EventHandler, EventTypes
+from Player.player import Player
 from Puzzles.connector_puzzle import Connector
 from Puzzles.flipping_puzzle import FlippingPuzzle
 from Puzzles.lights_out_puzzle import LightsOut
