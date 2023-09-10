@@ -53,7 +53,7 @@ if __name__ == "__main__":
     )
     # offset to get the player in the middle of the tiles
     middle_tile_pixel_location += tile_pixel_size // 2
-    starting_offset = (11, 10)
+    starting_offset = np.array((2, 10))
     game_map = GameMap(
         "GameMap/floor_surface.png",
         "GameMap/deco_surface.png",
@@ -62,7 +62,8 @@ if __name__ == "__main__":
         scaling_factor,
         starting_offset,
     )
-    player = Player(scaling_factor, starting_offset)
+    magic_player_offset = (15, 12)
+    player = Player(scaling_factor, starting_offset + magic_player_offset)
     game_map.update((0, 0))
     screen.blit(game_map.floor_surface, (0, 0))
     screen.blit(game_map.deco_surface, (0, 0))
@@ -82,6 +83,7 @@ if __name__ == "__main__":
 
         for event in EventHandler.get():
             if event.type == EventTypes.MAP_POSITION_UPDATE:
+                screen.fill((0, 0, 0))
                 game_map.update(event.data)
                 screen.blit(game_map.floor_surface, (0, 0))
                 if player.z_layer:

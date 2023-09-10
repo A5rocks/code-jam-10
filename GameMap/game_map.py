@@ -102,12 +102,15 @@ class GameMap:
             alt_slices = [slice(x, y) for x, y in alt_array_slices]
             floor_array = np.zeros([*array_size, self._floor_image_array.shape[2]], int)
             deco_array = np.zeros([*array_size, self._deco_image_array.shape[2]], int)
-            # I don't understand why this breaks the other case, but the other
-            # case works by default, so whatever
             if map_slices[0].start < 0 <= map_slices[1].start:
-                zero_overwrite_slices[:, 1] = np.minimum(
-                    zero_overwrite_slices[:, 1],
+                zero_overwrite_slices[1, 1] = np.minimum(
+                    zero_overwrite_slices[1, 1],
                     self._floor_image_array[*alt_slices].shape[1],
+                )
+            if map_slices[1].start < 0 <= map_slices[0].start:
+                zero_overwrite_slices[0, 1] = np.minimum(
+                    zero_overwrite_slices[0, 1],
+                    self._floor_image_array[*alt_slices].shape[0],
                 )
             zero_slices = [slice(x, y) for x, y in zero_overwrite_slices]
             floor_array[*zero_slices] = self._floor_image_array[*alt_slices]
