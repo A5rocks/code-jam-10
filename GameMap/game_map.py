@@ -82,4 +82,5 @@ class GameMap:
         self.deco_surface = make_2d_surface_from_array(
             self._deco_image_array[*self._map_position.get_slices()],
             scaling_factor=self._scaling_factor,
+            color_key=(255, 0, 255),
         )

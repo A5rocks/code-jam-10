@@ -34,6 +34,7 @@ if __name__ == "__main__":
         (0, 0), pygame.FULLSCREEN
     )  # Start PyGame initialization.
     screen_size = np.array(screen.get_size())
+    screen.set_colorkey((254, 0, 254))
     # This is required in order to convert PIL images into PyGame Surfaces
     pygame.init()
 
