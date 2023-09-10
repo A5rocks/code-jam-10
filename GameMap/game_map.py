@@ -68,20 +68,18 @@ class GameMap:
         self.floor_surface: pygame.Surface = pygame.Surface((0, 0))
         self.deco_surface: pygame.Surface = pygame.Surface((0, 0))
 
-    def update(self, shift_amount):
+    def update(self, shift_amount: tuple[int, int] | Sequence[int]):
+        """Update the map
+
+        Args:
+            shift_amount: (x, y) amount to shift the map
+        """
         self._map_position.shift(shift_amount)
-        # map_slices = self._map_position.get_slices()
-        # image_shape = [map_slice.stop - map_slice.start for map_slice in map_slices]
-        # floor_slice = np.zeros((*image_shape, self._floor_image_array.shape[2]), int)
-        # deco_slice = np.zeros((*image_shape, self._deco_image_array.shape[2]), int)
-        # lower = [-min(map_slice.start, 0) for map_slice in map_slices]
-        # upper = [min(image_bound - map_slice.stop, 0) + image_bound for map_slice, image_bound in zip(map_slices, image_shape)]
-        # padding_shape = (*((lower, upper) for lower, upper in zip(lower_differences, upper_differences)), (0, 0))
-        # floor_slice[lower[0]:upper[0], lower[1]:upper[1]] =
-        # print(image_shape, [*map_slices], lower_differences, upper_differences, padding_shape, floor_slice.shape)
-        # self.floor_surface = make_2d_surface_from_array(np.pad(floor_slice, padding_shape, constant_values=0)[*map_slices], scaling_factor=self._scaling_factor)
-        # self.deco_surface = make_2d_surface_from_array(np.pad(deco_slice, padding_size, constant_values=0), scaling_factor=self._scaling_factor)
         self.floor_surface = make_2d_surface_from_array(
             self._floor_image_array[*self._map_position.get_slices()],
+            scaling_factor=self._scaling_factor,
+        )
+        self.deco_surface = make_2d_surface_from_array(
+            self._deco_image_array[*self._map_position.get_slices()],
             scaling_factor=self._scaling_factor,
         )

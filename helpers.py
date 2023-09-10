@@ -43,7 +43,8 @@ class EventTypes(Enum):
     PUZZLE_SPRITE_UPDATE = auto()
     PUZZLE_SOLVED = auto()
     MAP_POSITION_UPDATE = auto()
-    INTERACTION_EVENT = auto
+    INTERACTION_EVENT = auto()
+    EXIT_INTERACTION = auto()
 
 
 class Event:

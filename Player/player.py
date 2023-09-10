@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Sequence
 
 import numpy as np
 import numpy.typing
@@ -37,23 +38,21 @@ PLAYER_SPRITES: dict[MovementDirections, numpy.typing.NDArray] = {
 class Player:
     """Main player class"""
 
-    def __init__(self, scaling_factor, start_pos):
-        self.image = PLAYER_SPRITES[MovementDirections.DOWN]
-        self.position = start_pos
-        self._scaling_factor = scaling_factor
-        self._collision_map = np.array(PIL.Image.open("collision_map.png")).swapaxes(
-            0, 1
+    def __init__(
+        self, scaling_factor: int, starting_position: tuple[int, int] | Sequence[int]
+    ):
+        self.image = make_2d_surface_from_array(
+            PLAYER_SPRITES[MovementDirections.DOWN], scaling_factor=scaling_factor
         )
+        self.position = np.array(starting_position)
+        self._scaling_factor = scaling_factor
+        self._collision_map = np.array(
+            PIL.Image.open("Player/collision_map.png")
+        ).swapaxes(0, 1)
+        self.z_layer = 0
 
     def loop(self, event: pygame.event.EventType):
-        """Player update method
-
-        Args:
-            event:
-
-        Returns:
-
-        """
+        """Player update method"""
         if event.type != pygame.KEYDOWN:
             return
         if all(event.key != alternatives for alternatives in KEYPRESS_ALTERNATIVES):
@@ -63,28 +62,16 @@ class Player:
         self.image = make_2d_surface_from_array(
             sprite, scaling_factor=self._scaling_factor
         )
-        if self._collision_map[
-            self.position[0] + movement_direction.value[0],
-            self.position[1] + movement_direction.value[1],
-            0,
-        ]:
+        pixel_to_check = self.position + movement_direction.value
+        if self._collision_map[*pixel_to_check, 0]:
             movement_direction = MovementDirections.NULL
-        elif self._collision_map[
-            self.position[0] + movement_direction.value[0],
-            self.position[1] + movement_direction.value[1],
-            1,
-        ]:
+        elif self._collision_map[*pixel_to_check, 1]:
             movement_direction = MovementDirections.NULL
-            EventHandler.add(
-                EventTypes.INTERACTION_EVENT,
-                (
-                    self.position[0] + movement_direction.value[0],
-                    self.position[1] + movement_direction.value[1],
-                ),
-            )
-        self.position = (
-            self.position[0] + movement_direction.value[0],
-            self.position[1] + movement_direction.value[1],
-        )
+            EventHandler.add(EventTypes.INTERACTION_EVENT, pixel_to_check)
+        elif self._collision_map[*pixel_to_check, 2] == 127:
+            self.z_layer = 1
+        else:
+            self.z_layer = 0
+        self.position += movement_direction.value
         EventHandler.add(EventTypes.PLAYER_SPRITE_UPDATE)
         EventHandler.add(EventTypes.MAP_POSITION_UPDATE, movement_direction.value)
