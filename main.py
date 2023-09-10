@@ -4,10 +4,10 @@ import pygame
 from PIL import Image
 
 import puzzle
+from Puzzles.connector_puzzle import Connector
 from Puzzles.flipping_puzzle import FlippingPuzzle
 from Puzzles.lights_out_puzzle import LightsOut
 from Puzzles.sliding_puzzle import SlidingPuzzle
-from Puzzles.connector_puzzle import Connector
 
 
 def switch_puzzle(puzzle_index, puzzle_list: list):

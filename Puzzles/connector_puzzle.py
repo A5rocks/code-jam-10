@@ -7,10 +7,10 @@ import pygame
 from puzzle import Puzzle
 
 COLORS = [
-    (0xff, 0xff, 0xff),
-    (0xff, 0x00, 0x00),
-    (0x00, 0xff, 0x00),
-    (0x00, 0x00, 0xff)
+    (0xFF, 0xFF, 0xFF),
+    (0xFF, 0x00, 0x00),
+    (0x00, 0xFF, 0x00),
+    (0x00, 0x00, 0xFF),
 ]
 
 
@@ -29,7 +29,7 @@ class Connector(Puzzle):
         output_size: tuple[int, int] = (),
         puzzle_pos: tuple[int, int] = (0, 0),
     ):
-        real_image = PIL.Image.new(image.mode, image.size, color=0xffffff)
+        real_image = PIL.Image.new(image.mode, image.size, color=0xFFFFFF)
         super().__init__(real_image, pieces_per_side, output_size, puzzle_pos)
         self.color_list = [COLORS[0]] * self.total_pieces
         self.locked = [False] * self.total_pieces
@@ -48,7 +48,6 @@ class Connector(Puzzle):
             if self.is_solved():
                 self.event.append(Puzzle.SOLVED)
 
-
     def click_tile(self, tile: int, reverse: bool):
         """Change the colors of a tile"""
         if self.locked[tile]:
@@ -64,17 +63,22 @@ class Connector(Puzzle):
                 self.color_list[tile],
                 shape[0] * shape[1],
             ),
-            shape
+            shape,
         )
 
     def is_solved(self) -> bool:
-        tiles = np.reshape([COLORS.index(c) for c in self.color_list], (self.pieces_per_side, self.pieces_per_side))
-        # essentially, confirm that every piece of a color (other than white) is connected
+        """Check whether the connector puzzle is solved."""
+        tiles = np.reshape(
+            [COLORS.index(c) for c in self.color_list],
+            (self.pieces_per_side, self.pieces_per_side),
+        )
+        # essentially, confirm that every piece of a color (other than white) is
+        # connected
         for i in range(1, len(COLORS)):
             # turn into an array of True / False
             locations = np.argwhere(tiles == i)
             connected = set()
-            
+
             if len(locations) < 2:
                 continue
 
@@ -83,17 +87,20 @@ class Connector(Puzzle):
             checking = [locations[0]]
             while checking:
                 location = checking.pop()
-                for neighbor in (location+(1, 0), location+(0, 1), location+(-1, 0), location+(0, -1)):
+                for neighbor in (
+                    location + (1, 0),
+                    location + (0, 1),
+                    location + (-1, 0),
+                    location + (0, -1),
+                ):
                     if tuple(neighbor) in locs and tuple(neighbor) not in connected:
                         connected.add(tuple(neighbor))
                         checking.append(neighbor)
-
 
             if len(locations) != len(connected):
                 return False
 
         return True
-
 
     def scramble(self) -> None:
         """Put the code to scramble your puzzle here"""
