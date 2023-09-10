@@ -63,13 +63,13 @@ class Player:
             sprite, scaling_factor=self._scaling_factor
         )
         pixel_to_check = np.array(self.position + movement_direction.value)
-        if self._collision_map[*pixel_to_check, 0]:
+        if self._collision_map[pixel_to_check[0], pixel_to_check[1], 0]:
             movement_direction = MovementDirections.NULL
-        elif self._collision_map[*pixel_to_check, 1]:
+        elif self._collision_map[pixel_to_check[0], pixel_to_check[1], 1]:
             movement_direction = MovementDirections.NULL
             EventHandler.add(EventTypes.INTERACTION_EVENT, pixel_to_check)
             # not 127 and I don't know why
-        elif self._collision_map[*pixel_to_check, 2] == 133:
+        elif self._collision_map[pixel_to_check[0], pixel_to_check[1], 2] == 133:
             self.z_layer = 1
         else:
             self.z_layer = 0

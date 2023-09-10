@@ -78,8 +78,8 @@ class GameMap:
         self._map_position.shift(shift_amount)
         map_slices = self._map_position.get_slices()
         if all(map_slice.start >= 0 for map_slice in map_slices):
-            floor_array = self._floor_image_array[*map_slices]
-            deco_array = self._deco_image_array[*map_slices]
+            floor_array = self._floor_image_array[map_slices[0], map_slices[1]]
+            deco_array = self._deco_image_array[map_slices[0], map_slices[1]]
         else:
             array_size = np.array(
                 [map_slice.stop - map_slice.start for map_slice in map_slices]
@@ -105,16 +105,20 @@ class GameMap:
             if map_slices[0].start < 0 <= map_slices[1].start:
                 zero_overwrite_slices[1, 1] = np.minimum(
                     zero_overwrite_slices[1, 1],
-                    self._floor_image_array[*alt_slices].shape[1],
+                    self._floor_image_array[alt_slices[0], alt_slices[1]].shape[1],
                 )
             if map_slices[1].start < 0 <= map_slices[0].start:
                 zero_overwrite_slices[0, 1] = np.minimum(
                     zero_overwrite_slices[0, 1],
-                    self._floor_image_array[*alt_slices].shape[0],
+                    self._floor_image_array[alt_slices[0], alt_slices[1]].shape[0],
                 )
             zero_slices = [slice(x, y) for x, y in zero_overwrite_slices]
-            floor_array[*zero_slices] = self._floor_image_array[*alt_slices]
-            deco_array[*zero_slices] = self._deco_image_array[*alt_slices]
+            floor_array[zero_slices[0], zero_slices[1]] = self._floor_image_array[
+                alt_slices[0], alt_slices[1]
+            ]
+            deco_array[zero_slices[0], zero_slices[1]] = self._deco_image_array[
+                alt_slices[0], alt_slices[1]
+            ]
 
         self.floor_surface = make_2d_surface_from_array(
             floor_array,
