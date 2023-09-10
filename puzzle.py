@@ -63,16 +63,6 @@ class Puzzle:
         output_size: tuple[int, int],
         puzzle_pos: tuple[int, int],
     ):
-        # if type(image) is not PIL.PngImagePlugin.PngImageFile:
-        #     raise (
-        #         TypeError(
-        #             "Expected type "
-        #             + str(PIL.PngImagePlugin.PngImageFile)
-        #             + ", got type "
-        #             + str(type(image))
-        #             + " instead."
-        #         )
-        #     )
         self.output_size = output_size
         self.pieces_per_side = pieces_per_side
         self.total_pieces = pieces_per_side**2
