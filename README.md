@@ -2,6 +2,7 @@
 
 - [The Pickled Peps](#the-pickled-peps)
   - [Team Members](#team-members)
+  - [Intro](#intro)
 - [Build Idea and Scope](#build-idea-and-scope)
   - [Original Scope](#original-scope)
   - [Final Scope](#final-scope)
@@ -31,6 +32,14 @@
  - Inventor4Life
 
 <sub>Markdown by GiGaGon based on the [Google Slides](https://docs.google.com/presentation/d/1hVHyL-425JmXZ2i5i8JCnnOdkUPW1x4VkbowvxzCYfg/)</sub>
+
+
+## Intro
+
+Set up the env by doing x and y
+
+Basic controls are wasd/arrow keys to move, mouse to interact with puzzles
+
 
 # Build Idea and Scope
 
