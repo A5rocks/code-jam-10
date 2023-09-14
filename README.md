@@ -2,7 +2,7 @@
 
 - [The Pickled Peps](#the-pickled-peps)
   - [Team Members](#team-members)
-  - [Intro](#intro)
+  - [Intro](#getting-started)
 - [Build Idea and Scope](#build-idea-and-scope)
   - [Original Scope](#original-scope)
   - [Final Scope](#final-scope)
@@ -34,9 +34,17 @@
 <sub>Markdown by GiGaGon based on the [Google Slides](https://docs.google.com/presentation/d/1hVHyL-425JmXZ2i5i8JCnnOdkUPW1x4VkbowvxzCYfg/)</sub>
 
 
-## Intro
+## Getting Started
 
-Set up the env by doing x and y
+To run the game, clone the repo with `git clone <repo url>`
+
+CD into the directory and run `python -m venv venv` to create the venv
+
+Run `./venv/Scripts/activate` or `source venv/bin/activate` to active the venv
+
+Run `pip install -r requirements.txt` to install the requirements
+
+Run `python main.py` to launch the game
 
 Basic controls are wasd/arrow keys to move, mouse to interact with puzzles
 
