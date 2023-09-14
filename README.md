@@ -2,7 +2,7 @@
 
 - [The Pickled Peps](#the-pickled-peps)
   - [Team Members](#team-members)
-  - [Intro](#getting-started)
+  - [Getting Stared](#getting-started)
 - [Build Idea and Scope](#build-idea-and-scope)
   - [Original Scope](#original-scope)
   - [Final Scope](#final-scope)
